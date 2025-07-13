@@ -27,7 +27,7 @@ Once the docker is successfully installed to your system, you can build the Zoho
 ```bash
 # Clone the repository
 git clone https://github.com/zoho/analytics-mcp-server.git
-cd analytics-mcp-server
+cd analytics-mcp-server/docker/
 
 # Build the Docker image
 docker build -t mcp/zoho_analytics .
