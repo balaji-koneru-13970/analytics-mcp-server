@@ -78,8 +78,12 @@ Configure these essential variables before integrating with the MCP Hosts:
       <td>Directory for storing temporary data files</td>
     </tr>
     <tr>
-      <td>ANALYTICS_DC_LOCATION</td>
-      <td>Your Zoho Analytics data center location (US, EU, IN, AU, JP, or CN)</td>
+      <td>ANALYTICS_ACCOUNTS_SERVER_URL</td>
+      <td>Your Zoho Analytics Accounts Domain URL (https://accounts.zoho.com)</td>
+    </tr>
+    <tr>
+      <td>ANALYTICS_ANALYTICS_SERVER_URL</td>
+      <td>Your Zoho Analytics Accounts Domain URL (https://analyticsapi.zoho.com)</td>
     </tr>
     <tr>
       <td>QUERY_DATA_ROW_LIMIT (Optional)</td>
