@@ -20,14 +20,14 @@ def query_data_implementation(org_id, workspace_id, sql_query):
         while True:
             job_details = bulk.get_export_job_details(job_id)
             current_time = time.time()
-            if job_details['jobStatus'] == 'JOB COMPLETED':
+            if job_details['jobCode'] == '1004': # Error code for 'JOB COMPLETED'
                 break
-            elif job_details['jobStatus'] == 'ERROR OCCURED':
+            elif job_details['jobCode'] == '1003': # Error code for 'ERROR OCCURRED	'
                 return "Some internal error ocurred (Not likely due to the query). Please try again later."
-            elif job_details['jobStatus'] == 'JOB ON QUEUE':
+            elif job_details['jobCode'] == '1001': # Error code for 'JOB NOT INITIATED	'
                 if current_time - start_time > QUERY_DATA_QUEUE_TIMEOUT:
                     return "Query Job accepted, but queue processing is slow. Please try again later."
-            elif job_details['jobStatus'] == 'JOB INITIATED':
+            elif job_details['jobCode'] == '1002': # Error code for 'JOB IN PROGRESS'
                 if processing_start_time is None:
                     processing_start_time = current_time
                 elif current_time - processing_start_time > QUERY_DATA_QUERY_EXECUTION_TIMEOUT:
@@ -89,14 +89,14 @@ def export_view_implementation(org_id, response_file_format, response_file_path,
             while True:
                 job_details = bulk.get_export_job_details(job_id)
                 current_time = time.time()
-                if job_details['jobStatus'] == 'JOB COMPLETED':
+                if job_details['jobCode'] == '1004':
                     break
-                elif job_details['jobStatus'] == 'JOB ERROR OCCURED':
+                elif job_details['jobCode'] == '1003':
                     return "Some internal error ocurred. Please try again later."
-                elif job_details['jobStatus'] == 'JOB ON QUEUE':
+                elif job_details['jobCode'] == '1001':
                     if current_time - start_time > QUERY_DATA_QUEUE_TIMEOUT:
                         return "Dashboard export Job accepted, but queue processing is slow. Please try again later."
-                elif job_details['jobStatus'] == 'JOB INITIATED':
+                elif job_details['jobCode'] == '1002':
                     if processing_start_time is None:
                         processing_start_time = current_time
                     elif current_time - processing_start_time > QUERY_DATA_QUERY_EXECUTION_TIMEOUT:
