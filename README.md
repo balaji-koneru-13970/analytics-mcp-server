@@ -6,20 +6,18 @@ The Zoho Analytics MCP Server (Beta) implements the Model Context Protocol (MCP)
 
 # Getting Started
 
-1. Docker Image Setup
-2. Configuring Environment Variables
-3. Integrating with MCP Hosts
-    a. Claude Desktop
-    b. VSCode
-    c. Cursor
-
-
+1. [Docker Image Setup](#1-docker-image-setup)
+2. [Configuring Environment Variables](#2-configuring-environment-variables)
+3. [Integrating with MCP Hosts](#3-integrate-with-mcp-hosts)
+    a. [Claude Desktop](#claude-desktop-configuration)
+    b. [VSCode](#vscode-configuration)
+    c. [Cursor](#cursor-configuration)
 
 
 ### 1. Docker Image Setup
 
 **System Requirements**
-To build the Zoho Analytics MCP server from source, you need to have Docker installed on your system. Before setup, please make sure to have docker and a container runtime installed in your device.
+To build the Zoho Analytics MCP server from source, you need to have Docker installed on your system. Before setup, please make sure to have `docker` and a `container runtime` installed in your device.
 
 **Build from Source**
 Once the docker is successfully installed to your system, you can build the Zoho Analytics MCP server from source.
@@ -85,21 +83,31 @@ Configure these essential variables before integrating with the MCP Hosts:
       <td>ANALYTICS_SERVER_URL</td>
       <td>Your Zoho Analytics Accounts Domain URL (https://analyticsapi.zoho.com)</td>
     </tr>
+  </tbody>
+</table>
+
+
+**Other Environment variables**
+
+The following is a list of other optional environment variables:
+
+<table>
+  <tbody>
     <tr>
       <td>QUERY_DATA_ROW_LIMIT (Optional)</td>
-      <td>Number of rows outputted by the query_data tool. Default row limit - 20</td>
+      <td>Number of rows outputted by the query_data tool. <br><br>Default row limit - 20</td>
     </tr>
     <tr>
       <td>QUERY_DATA_POLLING_INTERVAL (Optional)</td>
-      <td>Sleep Time between consecutive polls to check job status (JOB COMPLETED, JOB IN QUEUE; For more, please refer to analytics v2 api documentation). Default sleep time - 4</td>
+      <td>Sleep Time between consecutive polls to check job status (JOB COMPLETED, JOB IN QUEUE; For more, please refer to analytics v2 api documentation). Default sleep time - 4 seconds</td>
     </tr>
     <tr>
       <td>QUERY_DATA_QUEUE_TIMEOUT (Optional)</td>
-      <td>This is the amount of time allowed between job submit time in the queue and job processing (query processing) time. Default time in queue - 120</td>
+      <td>This is the amount of time allowed between job submit time in the queue and job processing (query processing) time. Default time in queue - 120 seconds</td>
     </tr>
     <tr>
       <td>QUERY_DATA_QUERY_EXECUTION_TIMEOUT (Optional)</td>
-      <td>The amount of time allowed for query execution. Default execution time - 30</td>
+      <td>The amount of time allowed for query execution. Default execution time - 30 seconds</td>
     </tr>
     <tr>
       <td>WORKSPACE_RESULT_LIMIT (Optional)</td>
@@ -112,15 +120,16 @@ Configure these essential variables before integrating with the MCP Hosts:
   </tbody>
 </table>
 
+
 ### 3. Integrate with MCP Hosts
 
-Zoho Analytics MCP Server can be integrated with any AI agent/tools that supports a MCP Server.
+Zoho Analytics MCP Server can be integrated with any MCP host. Below are some sample integrations that demonstrate how this can be done.
 
-**Claude Desktop Configuration**
+#### Claude Desktop Configuration
 To configure the Zoho Analytics MCP server with Claude Desktop, add the following configuration to your Claude settings:
 1. Install [Claude Desktop](https://claude.ai/download) in your system.
-2. Open the Claude Desktop application and navigate to Settings > Developer tab.
-3. Click Edit Config to configure (claude_desktop_config.json) with your MCP server details.
+2. Open the Claude Desktop application and navigate to **Settings > Developer** tab.
+3. Click **Edit Config** to configure *(claude_desktop_config.json)* with your MCP server details.
 
 ```json
 {
@@ -145,8 +154,7 @@ To configure the Zoho Analytics MCP server with Claude Desktop, add the followin
 }
 ```
 
-**VSCode Configuration**
-
+#### VSCode Configuration
 To configure the Zoho Analytics MCP server with Visual Studio Code:
 1. Install the VSCode in your system.
 2. Open the VSCode application and navigate to Settings.
@@ -178,7 +186,7 @@ To configure the Zoho Analytics MCP server with Visual Studio Code:
 ```
 
 
-**Cursor Configuration**
+#### Cursor Configuration
 To configure the Zoho Analytics MCP server with Cursor:
 1. Install the Cursor in your system.
 2. Open the Cursor application and navigate to **Settings > Tools and Integrations**.
