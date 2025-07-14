@@ -25,10 +25,7 @@ jobs:
         ANALYTICS_CLIENT_ID: ${{ secrets.ANALYTICS_CLIENT_ID }}
         ANALYTICS_CLIENT_SECRET: ${{ secrets.ANALYTICS_CLIENT_SECRET }}
         ANALYTICS_REFRESH_TOKEN: ${{ secrets.ANALYTICS_REFRESH_TOKEN }}
-        ANALYTICS_ORG_ID: ${{ secrets.ANALYTICS_ORG_ID }}
-        ANALYTICS_MCP_DATA_DIR: ${{ secrets.ANALYTICS_MCP_DATA_DIR }}
-        ACCOUNTS_SERVER_URL: ${{ secrets.ACCOUNTS_SERVER_URL }}
-        ANALYTICS_SERVER_URL: ${{ secrets.ANALYTICS_SERVER_URL }}
+        ANALYTICS_ORG_ID: ${{ vars.ANALYTICS_ORG_ID }}
       run: |
         pytest docker/src/tests/ --cov=tools.data_tools --cov-report=xml
     

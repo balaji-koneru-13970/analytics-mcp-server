@@ -1,4 +1,4 @@
-from tools.metadata_tools import get_workspaces_list
+from tools.metadata_tools import get_workspaces_list, get_view_list
 import pytest
 
 @pytest.mark.parametrize("include_shared_workspaces, contains_str, expected", [
@@ -6,5 +6,4 @@ import pytest
 ])
 def test_get_workspaces(include_shared_workspaces, contains_str, expected):
     response = get_workspaces_list(include_shared_workspaces=include_shared_workspaces, contains_str=contains_str)
-    print(response)
     assert response == expected
