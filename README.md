@@ -78,11 +78,11 @@ Configure these essential variables before integrating with the MCP Hosts:
       <td>Directory for storing temporary data files</td>
     </tr>
     <tr>
-      <td>ANALYTICS_ACCOUNTS_SERVER_URL</td>
+      <td>ACCOUNTS_SERVER_URL</td>
       <td>Your Zoho Analytics Accounts Domain URL (https://accounts.zoho.com)</td>
     </tr>
     <tr>
-      <td>ANALYTICS_ANALYTICS_SERVER_URL</td>
+      <td>ANALYTICS_SERVER_URL</td>
       <td>Your Zoho Analytics Accounts Domain URL (https://analyticsapi.zoho.com)</td>
     </tr>
     <tr>
@@ -134,7 +134,6 @@ To configure the Zoho Analytics MCP server with Claude Desktop, add the followin
         "-e", "ANALYTICS_REFRESH_TOKEN=<YOUR_ANALYTICS_REFRESH_TOKEN>",
         "-e", "ANALYTICS_ORG_ID=<YOUR_ANALYTICS_ORG_ID>",
         "-e", "ANALYTICS_MCP_DATA_DIR=<YOUR_ANALYTICS_MCP_DATA_DIR>",
-        "-e", "ANALYTICS_DC_LOCATION=<YOUR_ANALYTICS_DC>",
         "--network=host",
         "-i",
         "--rm",
@@ -167,7 +166,6 @@ To configure the Zoho Analytics MCP server with Visual Studio Code:
         "-e", "ANALYTICS_REFRESH_TOKEN=<YOUR_ANALYTICS_REFRESH_TOKEN>",
         "-e", "ANALYTICS_ORG_ID=<YOUR_ANALYTICS_ORG_ID>",
         "-e", "ANALYTICS_MCP_DATA_DIR=<YOUR_LOCAL_DATA_DIR>",
-        "-e", "ANALYTICS_DC_LOCATION=<YOUR_ANALYTICS_DC>",
         "--network=host",
         "-i",
         "--rm",
@@ -198,7 +196,6 @@ To configure the Zoho Analytics MCP server with Cursor:
         "-e", "ANALYTICS_REFRESH_TOKEN=<YOUR_ANALYTICS_REFRESH_TOKEN>",
         "-e", "ANALYTICS_ORG_ID=<YOUR_ANALYTICS_ORG_ID>",
         "-e", "ANALYTICS_MCP_DATA_DIR=<YOUR_ANALYTICS_MCP_DATA_DIR>",
-        "-e", "ANALYTICS_DC_LOCATION=<YOUR_ANALYTICS_DC>",
         "--network=host",
         "-i",
         "--rm",
@@ -343,7 +340,7 @@ For common issues:
     - Validate network connectivity
     - Check firewall settings
 3. Data Center Errors:
-    - Verify ANALYTICS_DC_LOCATION matches your organization's region
+    - Verify ANALYTICS_SERVER_URL and ACCOUNTS_SERVER_URL matches your organization's region
     - Ensure the location code is correct (case-sensitive)
 4. File System Problems:
     - Confirm if the data directory exists

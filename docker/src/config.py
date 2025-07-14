@@ -8,8 +8,8 @@ class Config:
     REFRESH_TOKEN = os.getenv("ANALYTICS_REFRESH_TOKEN")
     ORG_ID = os.getenv("ANALYTICS_ORG_ID")
     MCP_DATA_DIR = os.getenv("ANALYTICS_MCP_DATA_DIR")
-    ACCOUNTS_SERVER_URL = os.getenv("ANALYTICS_ACCOUNTS_SERVER_URL", "https://accounts.zoho.com")
-    ANALYTICS_SERVER_URL = os.getenv("ANALYTICS_ANALYTICS_SERVER_URL", "https://analyticsapi.zoho.com")
+    ACCOUNTS_SERVER_URL = os.getenv("ACCOUNTS_SERVER_URL", "https://accounts.zoho.com")
+    ANALYTICS_SERVER_URL = os.getenv("ANALYTICS_SERVER_URL", "https://analyticsapi.zoho.com")
 
 
 analytics_client: AnalyticsClient  = None
