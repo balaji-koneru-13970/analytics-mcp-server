@@ -28,9 +28,17 @@ git clone https://github.com/zoho/analytics-mcp-server.git
 cd analytics-mcp-server/docker/
 
 # Build the Docker image
-docker build -t mcp/zoho_analytics .
+docker build -t zohoanalytics/mcp-server:latest .
 ```
 
+
+**Pull Docker Image**
+
+If you prefer to use the pre-built Docker image, you can pull it directly from Docker Hub:
+
+```bash
+docker pull zohoanalytics/mcp-server:latest
+```
 
 ### 2. Configuring Environment Variables
 
@@ -147,7 +155,7 @@ To configure the Zoho Analytics MCP server with Claude Desktop, add the followin
         "-i",
         "--rm",
         "-v", "<YOUR_ANALYTICS_MCP_DATA_DIR>:<YOUR_ANALYTICS_MCP_DATA_DIR>",
-        "mcp/zoho_analytics"
+        "zohoanalytics/mcp-server"
       ]
     }
   }
@@ -178,7 +186,7 @@ To configure the Zoho Analytics MCP server with Visual Studio Code:
         "-i",
         "--rm",
         "-v", "<YOUR_LOCAL_DATA_DIR>:<YOUR_LOCAL_DATA_DIR>",
-        "mcp/zoho_analytics"
+        "zohoanalytics/mcp-server"
       ]
     }
   }
@@ -208,7 +216,7 @@ To configure the Zoho Analytics MCP server with Cursor:
         "-i",
         "--rm",
         "-v", "<YOUR_ANALYTICS_MCP_DATA_DIR>:<YOUR_ANALYTICS_MCP_DATA_DIR>",
-        "mcp/zoho_analytics"
+        "zohoanalytics/mcp-server"
       ]
     }
   }
@@ -264,19 +272,9 @@ The Zoho Analytics MCP server provides various tools for interacting with Zoho A
       <td>Exports an object (table, chart, or dashboard) from the workspace in the specified format.</td>
     </tr>
     <tr>
-      <td>create_lookup</td>
-      <td>Add Lookup</td>
-      <td>Creates a lookup relationship between two tables based on a common column.</td>
-    </tr>
-    <tr>
       <td>query_data</td>
       <td>Create Export Job - Using SQL Query</td>
       <td>Executes a SQL query on the specified workspace and returns the results.</td>
-    </tr>
-    <tr>
-      <td>create_custom_formula_column</td>
-      <td>Add Custom Formula</td>
-      <td>Creates a custom formula column derived from existing columns using a SQL expression.</td>
     </tr>
     <tr>
       <td>create_aggregate_formula</td>
