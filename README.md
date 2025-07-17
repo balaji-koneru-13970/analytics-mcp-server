@@ -29,7 +29,7 @@ cd analytics-mcp-server/docker/
 
 # Build the Zoho Analytics Docker image
 docker build --build-arg APP_PROFILE=ZA -t zohoanalytics/mcp-server .
-```
+
 # Build the ManageEngine Analytics Plus Docker image
 docker build --build-arg APP_PROFILE=APLUS -t meanalyticsplus/mcp-server .
 ```
