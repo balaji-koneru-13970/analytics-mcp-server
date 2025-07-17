@@ -156,9 +156,10 @@ async def search_views(
             max_epochs = 5
             epoch = 1
 
+            sample_supported = True
 
             # Epoch-based filtering
-            while len(current_view_list) > 15 and epoch <= max_epochs:
+            while len(current_view_list) > 15 and epoch <= max_epochs and sample_supported:
                 await ctx.info(f"Starting Epoch {epoch} with {len(current_view_list)} views")
                 
                 filtered_view_list = []
@@ -191,8 +192,16 @@ async def search_views(
                     Strictly provide your output in the following JSON format:
                     {{"relevant_views":[<list-of-top-5-view-ids-in-order-of-relevance>]}}
                     """
-                    
-                    response_string = await ctx.sample(prompt)
+
+                    try:
+                        response_string = await ctx.sample(prompt)
+                    except Exception as e:
+                        ctx.error(traceback.format_exc())
+                        if batch_number == 0 and epoch == 1:
+                            await ctx.info("Sampling is not supported in this environment")
+                            sample_supported = False
+                        break
+
 
                     if response_string.type != "text":
                         return "Error in processing the RAG response. Please try again."
@@ -203,7 +212,7 @@ async def search_views(
                         "prompt": prompt,
                         "response": response_string.text,
                     }
-                    await ctx.info(log_message)
+                    await ctx.info(json.dumps(log_message, indent=2))
 
                     response_json = json.loads(response_string.text)
 
@@ -216,9 +225,17 @@ async def search_views(
                             }
                             filtered_view_list.append(view_details)
                 
+
+                if not sample_supported:
+                    break
+
                 await ctx.info(f"Epoch {epoch} completed. Reduced from {len(current_view_list)} to {len(filtered_view_list)} views")
                 current_view_list = filtered_view_list
                 epoch += 1
+
+            if not sample_supported:
+                await ctx.info("Using fallback mechanism: Returning first 20 views from the workspace")
+                return transformed_view_list[:20]
 
             await ctx.info(f"Final result: {len(current_view_list)} views after {epoch - 1} epochs")
             return current_view_list
