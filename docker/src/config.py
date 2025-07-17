@@ -1,5 +1,6 @@
 import os
 from AnalyticsClient import AnalyticsClient
+from ZA_Config import ZA_Config
 
 # Need to use pydantic to add validation
 class Config:
@@ -10,6 +11,7 @@ class Config:
     MCP_DATA_DIR = os.getenv("ANALYTICS_MCP_DATA_DIR")
     ACCOUNTS_SERVER_URL = os.getenv("ACCOUNTS_SERVER_URL", "https://accounts.zoho.com")
     ANALYTICS_SERVER_URL = os.getenv("ANALYTICS_SERVER_URL", "https://analyticsapi.zoho.com")
+    IS_ONPREMISE = os.getenv("IS_ONPREMISE", "false").lower() == "true"
 
 
 analytics_client: AnalyticsClient  = None
@@ -23,7 +25,12 @@ def get_analytics_client_instance() -> AnalyticsClient:
     if not analytics_client:
         analytics_client = AnalyticsClient(Config.CLIENT_ID, Config.CLIENT_SECRET, Config.REFRESH_TOKEN)
         if Config.ACCOUNTS_SERVER_URL is None or Config.ANALYTICS_SERVER_URL is None:
-            raise RuntimeError("ACCOUNTS_SERVER_URL (or) ANALYTICS_SERVER_URL environment variable is not set. Please set it to your Zoho Analytics accounts server URL and analytics server URL respectively.")
+            raise RuntimeError(
+                f"ACCOUNTS_SERVER_URL (or) ANALYTICS_SERVER_URL environment variable is not set. "
+                f"Please set it to your {Config.PRODUCT_NAME} accounts server URL and analytics server URL respectively."
+            )
         analytics_client.accounts_server_url = Config.ACCOUNTS_SERVER_URL
         analytics_client.analytics_server_url = Config.ANALYTICS_SERVER_URL
+
+        analytics_client.exclude_ssl = True if Config.IS_ONPREMISE else False
     return analytics_client

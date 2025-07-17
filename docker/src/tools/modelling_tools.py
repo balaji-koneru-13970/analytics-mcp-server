@@ -1,6 +1,7 @@
 from mcp_instance import mcp
 from config import Config, get_analytics_client_instance
 from utils.common import retry_with_fallback
+from utils.decorators import with_dynamic_doc
 from utils.modelling_utils import (
     create_workspace_implementation, 
     create_table_implementation,
@@ -20,16 +21,17 @@ REQUIRED_SUMMARY_AGGREGATE_KEYS = {"columnName", "operation", "tableName"}
 
 
 @mcp.tool()
-def create_workspace(workspace_name: str, org_id: str | None = None) -> str:
-    """
+@with_dynamic_doc("""
     <use_case>
-        Create a new workspace in zoho analytics with the given name.
+        Create a new workspace in {PRODUCT_NAME} with the given name.
     </use_case>
 
     <important_notes>
-        A workspace is a container for related zoho analytics objects like tables, reports, and dashboards.
+        A workspace is a container for related {PRODUCT_NAME} objects like tables, reports, and dashboards.
     </important_notes>
-    """
+""")
+def create_workspace(workspace_name: str, org_id: str | None = None) -> str:
+
     try:
         if not org_id:
             org_id = Config.ORG_ID
@@ -67,14 +69,13 @@ def create_table(workspace_id: str, table_name: str, columns_list: list[dict], o
 
 
 @mcp.tool()
-def create_aggregate_formula(workspace_id: str, table_id: str, expression: str, formula_name: str, org_id: str | None = None) -> str:
-    """
+@with_dynamic_doc("""
     <use_case>
         Create an aggregate formula in the specified table of the workspace.
     </use_case>
 
     <important_notes>
-        1. Aggregate Formulas in zoho analytics are select query expression that returns a single aggregate value as output.
+        1. Aggregate Formulas in {PRODUCT_NAME} are select query expression that returns a single aggregate value as output.
         2. The expression should always return a valid aggregate value.
         3. Any Column or Table names used should be enclosed in double quotes. Literal values should be enclosed in single quotes.
         4. While the expression can contain complex nested functions, it should always return a single aggregate value.
@@ -94,7 +95,8 @@ def create_aggregate_formula(workspace_id: str, table_id: str, expression: str, 
     <returns>
         str: The result of the operation. If successful, it returns the ID of the created aggregate formula.
     </returns>
-    """
+    """)
+def create_aggregate_formula(workspace_id: str, table_id: str, expression: str, formula_name: str, org_id: str | None = None) -> str:
     try:
         if not org_id:
             org_id = Config.ORG_ID
@@ -106,10 +108,9 @@ def create_aggregate_formula(workspace_id: str, table_id: str, expression: str, 
 
 
 @mcp.tool()
-def create_chart_report(workspace_id: str, table_name: str, chart_name: str, chart_details: dict, filters: list[dict] | None = None, org_id: str | None = None) -> str:
-    """
+@with_dynamic_doc("""
     <use_case>
-    - Create a chart report in the specified workspace for a table in Zoho Analytics.
+    - Create a chart report in the specified workspace for a table in {PRODUCT_NAME}.
     - Use this to generate visual representations of data using bar, line, pie, scatter, or bubble charts.
     </use_case>
 
@@ -155,7 +156,9 @@ def create_chart_report(workspace_id: str, table_name: str, chart_name: str, cha
     <returns>
     - str: Chart creation status or error message.
     </returns>
-    """
+    """)
+def create_chart_report(workspace_id: str, table_name: str, chart_name: str, chart_details: dict, filters: list[dict] | None = None, org_id: str | None = None) -> str:
+    
     try:
         if not org_id:
             org_id = Config.ORG_ID
@@ -170,10 +173,9 @@ def create_chart_report(workspace_id: str, table_name: str, chart_name: str, cha
 
 
 @mcp.tool()
-def create_pivot_report(workspace_id: str, table_name: str, report_name: str, pivot_details: dict, filters: list[dict] | None = None, org_id: str | None = None) -> str:
-    """
+@with_dynamic_doc("""
     <use_case>
-    - Create a pivot table report in the specified workspace and table in Zoho Analytics.
+    - Create a pivot table report in the specified workspace and table in {PRODUCT_NAME}.
     - Use this when user needs multidimensional data summaries by defining rows, columns, and data fields.
     </use_case>
 
@@ -219,7 +221,8 @@ def create_pivot_report(workspace_id: str, table_name: str, report_name: str, pi
     <returns>
     - str: Report creation result or error message.
     </returns>
-    """
+    """)
+def create_pivot_report(workspace_id: str, table_name: str, report_name: str, pivot_details: dict, filters: list[dict] | None = None, org_id: str | None = None) -> str:
     try:
         if not org_id:
             org_id = Config.ORG_ID
@@ -232,10 +235,9 @@ def create_pivot_report(workspace_id: str, table_name: str, report_name: str, pi
 
 
 @mcp.tool()
-def create_summary_report(workspace_id: str, table_name: str, report_name: str, summary_details: dict, filters: list[dict] | None = None, org_id: str | None = None) -> str:
-    """
-    <use_case>
-    - Create a summary report in the specified workspace and table in Zoho Analytics.
+@with_dynamic_doc("""
+   <use_case>
+    - Create a summary report in the specified workspace and table in {PRODUCT_NAME}.
     - Use this to generate grouped aggregate reports, ideal for quick summaries with group-by and aggregate logic.
     - Creates a summary table that groups data by specified columns and applies aggregate functions.
     </use_case>
@@ -281,7 +283,8 @@ def create_summary_report(workspace_id: str, table_name: str, report_name: str, 
     <returns>
     - str: Summary creation status or detailed error message.
     </returns>
-    """
+""")               
+def create_summary_report(workspace_id: str, table_name: str, report_name: str, summary_details: dict, filters: list[dict] | None = None, org_id: str | None = None) -> str:
     try:
         if not org_id:
             org_id = Config.ORG_ID
@@ -294,8 +297,7 @@ def create_summary_report(workspace_id: str, table_name: str, report_name: str, 
 
 
 @mcp.tool()
-def create_query_table(workspace_id: str, table_name: str, query: str, org_id: str | None = None) -> str:
-    """
+@with_dynamic_doc("""
     <use_case>
         1. Create a query table in the specified workspace with the given name and SQL query.
         2. Used when user needs to create a derived table based on a SQL query.
@@ -303,7 +305,7 @@ def create_query_table(workspace_id: str, table_name: str, query: str, org_id: s
     </use_case>
 
     <important_notes>
-        1. Query Tables in Zoho Analytics are derived tables created from a SQL query.
+        1. Query Tables in {PRODUCT_NAME} are derived tables created from a SQL query.
         2. The query should be a valid SQL query that returns a result set.
         3. Query tables can be used in charts and other reports just like regular tables.
         4. The query should be a valid MYSQL compatible select query.
@@ -319,7 +321,8 @@ def create_query_table(workspace_id: str, table_name: str, query: str, org_id: s
     <returns>
         str: The result of the operation. If successful, it returns the ID of the created query table.
     </returns>
-    """
+""")
+def create_query_table(workspace_id: str, table_name: str, query: str, org_id: str | None = None) -> str:
     try:
         if not org_id:
             org_id = Config.ORG_ID

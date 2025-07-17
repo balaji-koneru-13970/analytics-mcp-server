@@ -1,5 +1,5 @@
 from mcp_instance import mcp
-from config import Config
+from config import Config, get_analytics_client_instance
 import os
 import json
 import urllib
@@ -7,21 +7,21 @@ import requests
 import pandas as pd
 from utils.common import retry_with_fallback
 from utils.data_utils import import_data_implementation, export_view_implementation, query_data_implementation
+from utils.decorators import with_dynamic_doc
 
 
 
 @mcp.tool()
-def analyze_file_structure(file_path: str) -> dict:
-    """
+@with_dynamic_doc("""
     <use_case>
     1. Analyzes the structure of a file (CSV or JSON) to determine its columns and data types.
-    2. This can be used to understand the structure of a file before importing it into Zoho Analytics.
+    2. This can be used to understand the structure of a file before importing it into {PRODUCT_NAME}.
     3. If the table does not already exist and a file needs to be imported, this tool can be used to analyze the file structure and create a new table with the appropriate columns. 
     </use_case>
 
     <important_notes>
     - This tool supports only local files. If the file is a remote URL, download it first using the download_file tool.
-    - The returned data types will not be the exact data types used in Zoho Analytics, but rather a general representation of the data types in Python.
+    - The returned data types will not be the exact data types used in {PRODUCT_NAME}, but rather a general representation of the data types in Python.
     </important_notes>
 
     <arguments>
@@ -31,8 +31,9 @@ def analyze_file_structure(file_path: str) -> dict:
     <returns>
         A dictionary containing the column names and their respective data types.
     </returns>
-    """
-    
+""")
+def analyze_file_structure(file_path: str) -> dict:
+
     try:
         if not os.path.exists(file_path):
             return file_path + " does not exist. Please provide a valid file path."
@@ -73,11 +74,10 @@ def analyze_file_structure(file_path: str) -> dict:
         return f"An error occurred while analyzing the file structure: {e}"
 
 @mcp.tool()
-def download_file(file_url: str) -> str:
-    """
+@with_dynamic_doc("""
     <use_case>
     1. Downloads a file from a given URL and saves it to a local directory.
-    2. This can be used to download files that need to be imported into Zoho Analytics.
+    2. This can be used to download files that need to be imported into {PRODUCT_NAME}.
     </use_case>
 
     <arguments>
@@ -87,7 +87,8 @@ def download_file(file_url: str) -> str:
     <returns>
         A string indicating the path where the file has been saved locally.
     </returns>
-    """
+""")
+def download_file(file_url: str) -> str:
 
     try:
 
@@ -100,7 +101,12 @@ def download_file(file_url: str) -> str:
             filename = f"downloaded_file.{file_type}"
 
         downloaded_path = os.path.join(download_dir, filename)
-        response = requests.get(file_url, stream=True)
+        
+        # Get SSL verification setting from analytics client
+        analytics_client = get_analytics_client_instance()
+        verify_ssl = not analytics_client.exclude_ssl
+        
+        response = requests.get(file_url, stream=True, verify=verify_ssl)
         response.raise_for_status()
 
         with open(downloaded_path, 'wb') as f:
@@ -152,9 +158,8 @@ def import_data(workspace_id: str, table_id: str, data: list[dict] | None = None
 
 
 @mcp.tool()
-def export_view(workspace_id: str, view_id: str, response_file_format: str, response_file_path: str, org_id: str | None = None) -> str:
-    """
-    <use_case>
+@with_dynamic_doc("""
+   <use_case>
         Export an object from the workspace in the specified format. These objects can be tables, charts, or dashboards.
     </use_case>
 
@@ -164,12 +169,14 @@ def export_view(workspace_id: str, view_id: str, response_file_format: str, resp
     
     <arguments>
         workspace_id (str): The ID of the workspace from which to export objects.
-        view_id (str): The ID of the Zoho Analytics view to be exported. This can be a table, chart, or dashboard.
+        view_id (str): The ID of the {PRODUCT_NAME} view to be exported. This can be a table, chart, or dashboard.
         response_file_format (str): The format in which to export the objects. Supported formats are ["csv","json","xml","xls","pdf","html","image"].
         response_file_path (str): The path where the exported file will be saved.
         org_id (str | None): The ID of the organization to which the workspace belongs to. If not provided, it defaults to the organization ID from the configuration.
-    <arguments>
-    """
+    <arguments>               
+""")
+def export_view(workspace_id: str, view_id: str, response_file_format: str, response_file_path: str, org_id: str | None = None) -> str:
+
     try:
         if not org_id:
             org_id = Config.ORG_ID
@@ -179,11 +186,10 @@ def export_view(workspace_id: str, view_id: str, response_file_format: str, resp
 
 
 @mcp.tool()
-def query_data(workspace_id: str, sql_query: str, org_id: str | None = None) -> list[dict]:
-    """
+@with_dynamic_doc("""
     <use_case>
     1. Executes a SQL query on the specified workspace and returns the top 20 rows as results.
-    2. This can be used to retrieve data from Zoho Analytics using custom SQL queries.
+    2. This can be used to retrieve data from {PRODUCT_NAME} using custom SQL queries.
     3. Use this when user asks for any queries from the data in the workspace.
     4. Use this to gather insights from the data in the workspace and answer user queries.
     5. Can be used to answer natural language queries by analysing the result of the SQL query.
@@ -207,7 +213,9 @@ def query_data(workspace_id: str, sql_query: str, org_id: str | None = None) -> 
         Result of the SQL query in a comma-separated (list of list) format of the top 20 rows alone, the first row contains the column names. 
         If an error occurs, returns an error message.
     </returns>
-    """
+""")
+def query_data(workspace_id: str, sql_query: str, org_id: str | None = None) -> list[dict]:
+
     if not org_id:
         org_id = Config.ORG_ID
     try:

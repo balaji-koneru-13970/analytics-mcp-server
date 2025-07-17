@@ -3,6 +3,7 @@ from config import Config, get_analytics_client_instance
 from utils.metadata_util import filter_and_limit_workspaces, get_views
 import os
 from utils.common import retry_with_fallback
+from utils.decorators import with_dynamic_doc
 
 WORKSPACE_RESULT_LIMIT = os.getenv("ANALYTICS_WORKSPACE_LIST_RESULT_SIZE") or 20
 
@@ -55,17 +56,16 @@ def get_workspaces_list(include_shared_workspaces: bool, contains_str: str | Non
         return f"An error occurred while fetching workspaces: {str(e)}"
     
 @mcp.tool()
-def get_view_list(workspace_id: str, allowedViewTypesIds: list[int] | None = None, org_id: str | None = None) -> list[dict]:
-    """
+@with_dynamic_doc("""
     <use_case>
         1) Fetches the list of views within a specified workspace.
         2) Used when user needs to retrieve the list of tables or reports or dashboards (any type of view) from a workspace
     </use_case>
 
     <important_notes>
-    - In Zoho Analytics, Organizations are the highest level of data segregation. Each organization can have multiple workspaces, and each workspace can contain various views (tables, reports, dashboards, etc.).
-    - In Zoho Analytics, the term view can refer to different types of data representations or objects within a workspace. A view might be a table (raw data), a pivot table (summarized data), a query table (custom SQL logic), a report (visualization), or other related elements.
-        Different types of views available in zoho analytics are:
+    - In {PRODUCT_NAME}, Organizations are the highest level of data segregation. Each organization can have multiple workspaces, and each workspace can contain various views (tables, reports, dashboards, etc.).
+    - In {PRODUCT_NAME}, the term view can refer to different types of data representations or objects within a workspace. A view might be a table (raw data), a pivot table (summarized data), a query table (custom SQL logic), a report (visualization), or other related elements.
+        Different types of views available in {PRODUCT_NAME} are:
         (view type_id, view_type_name)
         0 - Table: A standard table
         2 - Chart: A graphical representation of data
@@ -79,7 +79,7 @@ def get_view_list(workspace_id: str, allowedViewTypesIds: list[int] | None = Non
 
     <arguments>
         workspace_id (str): The ID of the workspace for which to fetch the views.
-        allowedViewTypesIds (int): Optional list of view type IDs to filter the views. If None, only tables and query tables are fetched.
+        allowedViewTypesIds (list[int] | None): Optional. If not provided, will auto-select all supported view types [0, 2, 3, 4, 6, 7].
         org_id (str | None): The ID of the organization to which the workspace belongs to. If not provided, it defaults to the organization ID from the configuration.
     </arguments>
 
@@ -87,7 +87,8 @@ def get_view_list(workspace_id: str, allowedViewTypesIds: list[int] | None = Non
         A list of dictionaries, each representing a view with its details.
         If an error occurs, returns an error message.
     </returns>
-    """
+""")
+def get_view_list(workspace_id: str, allowedViewTypesIds: list[int] | None = None, org_id: str | None = None) -> list[dict]:
     try:
         if not org_id:
             org_id = Config.ORG_ID

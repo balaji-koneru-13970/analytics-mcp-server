@@ -33,6 +33,7 @@ class AnalyticsClient:
 
         self.accounts_server_url = "https://accounts.zoho.com"
         self.analytics_server_url = "https://analyticsapi.zoho.com"
+        self.exclude_ssl = False
 
         self.client_id = client_id
         self.client_secret = client_secret
@@ -1149,7 +1150,7 @@ class AnalyticsClient:
             @raise ServerError: If the server has received the request but did not process the request due to some error.
             @raise ParseError: If the server has responded but client was not able to parse the response.
             """
-            endpoint = self.endpoint + "/folders/" + folder_id + "/reorder";
+            endpoint = self.endpoint + "/folders/" + folder_id + "/reorder"
             config["referenceFolderId"] = reference_folder_id
             self.ac.send_api_request("PUT", endpoint, config, self.request_headers)
 
@@ -1165,7 +1166,7 @@ class AnalyticsClient:
             @raise ServerError: If the server has received the request but did not process the request due to some error.
             @raise ParseError: If the server has responded but client was not able to parse the response.
             """
-            endpoint = self.endpoint + "/views/movetofolder";
+            endpoint = self.endpoint + "/views/movetofolder"
             config["folderId"] = folder_id
             config["viewIds"] = view_ids
             self.ac.send_api_request("PUT", endpoint, config, self.request_headers)
@@ -2465,9 +2466,9 @@ class AnalyticsClient:
                     req_obj.auth = proxy_auth_details
 
             if bool(files):
-                resp_obj = req_obj.post(request_url, params = parameters, files = files, headers = request_headers)
+                resp_obj = req_obj.post(request_url, params = parameters, files = files, headers = request_headers, verify=not self.exclude_ssl)
             else:
-                resp_obj = req_obj.post(request_url, params = parameters, headers = request_headers)   
+                resp_obj = req_obj.post(request_url, params = parameters, headers = request_headers, verify=not self.exclude_ssl)   
             
             resp_obj = response_obj(resp_obj)
         except Exception as ex:
@@ -2530,7 +2531,7 @@ class AnalyticsClient:
                     proxy_auth_details = HTTPProxyDigestAuth(self.proxy_user_name, self.proxy_password)
                     req_obj.auth = proxy_auth_details
 
-            resp_obj = req_obj.get(request_url, params = parameters, headers = request_headers)
+            resp_obj = req_obj.get(request_url, params = parameters, headers = request_headers, verify=not self.exclude_ssl)
             
         except Exception as ex:
             resp_obj = response_obj(ex)
@@ -2597,13 +2598,13 @@ class AnalyticsClient:
             resp_obj = None
 
             if request_method == "GET":
-                resp_obj = req_obj.get(request_url, params = parameters, headers = request_headers)
+                resp_obj = req_obj.get(request_url, params = parameters, headers = request_headers, verify=not self.exclude_ssl)
             elif request_method == "POST":
-                resp_obj = req_obj.post(request_url, params = parameters, headers = request_headers)
+                resp_obj = req_obj.post(request_url, params = parameters, headers = request_headers, verify=not self.exclude_ssl)
             elif request_method == "PUT":
-                resp_obj = req_obj.put(request_url, params = parameters, headers = request_headers)
+                resp_obj = req_obj.put(request_url, params = parameters, headers = request_headers, verify=not self.exclude_ssl)
             elif request_method == "DELETE":
-                resp_obj = req_obj.delete(request_url, params = parameters, headers = request_headers)
+                resp_obj = req_obj.delete(request_url, params = parameters, headers = request_headers, verify=not self.exclude_ssl)
             
             resp_obj = response_obj(resp_obj)
         except Exception as ex:
