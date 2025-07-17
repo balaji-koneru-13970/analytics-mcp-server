@@ -113,7 +113,8 @@ async def search_views(
         - If view_contains_str is provided, performs simple string matching on view names.
         - If view_contains_str is None and natural_language_query is provided with ctx available, performs intelligent RAG-based search using natural language.
         - If both view_contains_str and natural_language_query are provided, view_contains_str takes precedence and RAG search is not performed.
-        - If both are None, returns all views in the workspace.
+        - If both are None, returns returns the views without filtering. If there are too many views, it will return an error message.
+        - If not specified explicitly, use [0, 6] as default allowedViewTypesIds, which includes Table and Query Table.
     </important_notes>
 
     <arguments>
@@ -121,6 +122,14 @@ async def search_views(
         - natural_language_query (str | None): Natural language query for intelligent search. Ignored if view_contains_str is provided.
         - view_contains_str (str | None): String to filter views by name matching. Takes precedence over natural_language_query.
         - allowedViewTypesIds (list[int] | None): Optional list of view type IDs to filter results.
+            Different types of views available in zoho analytics are:
+            (view type_id, view_type_name)
+            0 - Table: A standard table
+            2 - Chart: A graphical representation of data
+            3 - Pivot Table: A table that summarizes data in a multidimensional format
+            4 - Summary View: A view that provides a simple tabular summary of your data with aggregate functions applied
+            6 - Query Table: A derived table created from a custom SQL query
+            7 - Dashboard: A collection of visualizations and reports
         - ctx (Context | None): Context for async operations - required for natural language search.
         - org_id (str | None): Organization ID. Defaults to config value if not provided.
     </arguments>
@@ -134,7 +143,7 @@ async def search_views(
         if not org_id:
             org_id = Config.ORG_ID
 
-        if view_contains_str:
+        if (view_contains_str is not None and view_contains_str.strip() != "") or (natural_language_query is None or natural_language_query.strip() == ""):
             return retry_with_fallback([org_id], workspace_id, "WORKSPACE", get_views,workspace_id=workspace_id, allowedViewTypesIds=allowedViewTypesIds, contains_str=view_contains_str, from_relevant_views_tool=False)
     
         else:
