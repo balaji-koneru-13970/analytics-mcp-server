@@ -27,8 +27,11 @@ Once the docker is successfully installed to your system, you can build the Zoho
 git clone https://github.com/zoho/analytics-mcp-server.git
 cd analytics-mcp-server/docker/
 
-# Build the Docker image
-docker build -t zohoanalytics/mcp-server:latest .
+# Build the Zoho Analytics Docker image
+docker build --build-arg APP_PROFILE=ZA -t zohoanalytics/mcp-server .
+```
+# Build the ManageEngine Analytics Plus Docker image
+docker build --build-arg APP_PROFILE=APLUS -t meanalyticsplus/mcp-server .
 ```
 
 
@@ -90,6 +93,10 @@ Configure these essential variables before integrating with the MCP Hosts:
     <tr>
       <td>ANALYTICS_SERVER_URL</td>
       <td>Your Zoho Analytics Accounts Domain URL (https://analyticsapi.zoho.com)</td>
+    </tr>
+    <tr>
+      <td>IS_ONPREMISE</td>
+      <td>true/false (optional)</td>
     </tr>
   </tbody>
 </table>
