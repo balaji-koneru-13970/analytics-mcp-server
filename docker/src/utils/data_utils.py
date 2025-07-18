@@ -109,5 +109,7 @@ def export_view_implementation(org_id, response_file_format, response_file_path,
             if error_message:
                 return error_message
             bulk.export_bulk_data(job_id, response_file_path)
+        else:
+            raise e
     return f"Object exported successfully to {response_file_path} in {response_file_format} format."
 

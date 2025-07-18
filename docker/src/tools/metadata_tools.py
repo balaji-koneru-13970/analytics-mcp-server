@@ -4,6 +4,7 @@ from utils.metadata_util import filter_and_limit_workspaces, get_views
 import os
 from utils.common import retry_with_fallback
 from fastmcp import Context
+from fastmcp.server.dependencies import get_context
 import math
 import json
 import traceback
@@ -11,7 +12,7 @@ import traceback
 WORKSPACE_RESULT_LIMIT = os.getenv("ANALYTICS_WORKSPACE_LIST_RESULT_SIZE") or 20
 
 @mcp.tool()
-def get_workspaces_list(include_shared_workspaces: bool, contains_str: str | None = None) -> list[dict]:
+async def get_workspaces_list(include_shared_workspaces: bool, contains_str: str | None = None) -> list[dict]:
     """
     <use_case>
         1) Fetches the list of workspaces in the user's organization.
@@ -56,11 +57,13 @@ def get_workspaces_list(include_shared_workspaces: bool, contains_str: str | Non
             
             return owned_result + shared_result
     except Exception as e:
+        ctx = get_context()
+        await ctx.error(traceback.format_exc())
         return f"An error occurred while fetching workspaces: {str(e)}"
     
 
 @mcp.tool()
-def get_view_details(view_id: str) -> dict:
+async def get_view_details(view_id: str) -> dict:
     """
     <use_case>
         1) Fetches the details of a specific view in a workspace.
@@ -91,6 +94,8 @@ def get_view_details(view_id: str) -> dict:
             column.pop("defaultValue")
         return view_details
     except Exception as e:
+        ctx = get_context()
+        await ctx.error(traceback.format_exc())
         return f"An error occurred while fetching view details: {str(e)}"
     
 
@@ -100,7 +105,6 @@ async def search_views(
     natural_language_query: str | None = None,
     view_contains_str: str | None = None,
     allowedViewTypesIds: list[int] | None = None,
-    ctx: Context | None = None,
     org_id: str | None = None
 ) -> list[dict]:
     """
@@ -168,6 +172,7 @@ async def search_views(
             sample_supported = True
 
             # Epoch-based filtering
+            ctx = get_context()
             while len(current_view_list) > 15 and epoch <= max_epochs and sample_supported:
                 await ctx.info(f"Starting Epoch {epoch} with {len(current_view_list)} views")
                 

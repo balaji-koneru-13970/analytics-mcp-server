@@ -11,6 +11,8 @@ from utils.modelling_utils import (
     create_query_table_implementation,
     delete_view_implementation
 )
+import traceback
+from fastmcp.server.dependencies import get_context
 
 ALLOWED_CHART_TYPES = ["bar", "line", "pie", "scatter", "bubble"]
 REQUIRED_FILTER_KEYS = {"columnName", "operation", "filterType", "values", "exclude"}
@@ -20,7 +22,7 @@ REQUIRED_SUMMARY_AGGREGATE_KEYS = {"columnName", "operation", "tableName"}
 
 
 @mcp.tool()
-def create_workspace(workspace_name: str, org_id: str | None = None) -> str:
+async def create_workspace(workspace_name: str, org_id: str | None = None) -> str:
     """
     <use_case>
         Create a new workspace in zoho analytics with the given name.
@@ -35,12 +37,14 @@ def create_workspace(workspace_name: str, org_id: str | None = None) -> str:
             org_id = Config.ORG_ID
         return retry_with_fallback([org_id], None, None, create_workspace_implementation, workspace_name=workspace_name)
     except Exception as e:
+        ctx = get_context()
+        await ctx.error(traceback.format_exc())
         error_message = e.message if hasattr(e, 'message') else str(e)
         return f"An error occurred while creating the workspace : {error_message}"
 
 
 @mcp.tool()
-def create_table(workspace_id: str, table_name: str, columns_list: list[dict], org_id: str | None = None) -> str:
+async def create_table(workspace_id: str, table_name: str, columns_list: list[dict], org_id: str | None = None) -> str:
     """
     <use_case>
         Create a new table in the given workspace with the given name.
@@ -62,12 +66,14 @@ def create_table(workspace_id: str, table_name: str, columns_list: list[dict], o
         return retry_with_fallback([org_id], workspace_id, "WORKSPACE", create_table_implementation, 
                                    workspace_id=workspace_id, table_name=table_name, columns_list=columns_list)
     except Exception as e:
+        ctx = get_context()
+        await ctx.error(traceback.format_exc())
         error_message = e.message if hasattr(e, 'message') else str(e)
         return f"An error occurred while creating the table : {error_message}"
 
 
 @mcp.tool()
-def create_aggregate_formula(workspace_id: str, table_id: str, expression: str, formula_name: str, org_id: str | None = None) -> str:
+async def create_aggregate_formula(workspace_id: str, table_id: str, expression: str, formula_name: str, org_id: str | None = None) -> str:
     """
     <use_case>
         Create an aggregate formula in the specified table of the workspace.
@@ -101,12 +107,14 @@ def create_aggregate_formula(workspace_id: str, table_id: str, expression: str, 
         return retry_with_fallback([org_id], workspace_id, "WORKSPACE", create_aggregate_formula_implementation, workspace_id=workspace_id,
                                   table_id=table_id, expression=expression, formula_name=formula_name)
     except Exception as e:
+        ctx = get_context()
+        await ctx.error(traceback.format_exc())
         error_message = e.message if hasattr(e, 'message') else str(e)
         return f"An error occurred while creating the aggregate formula : {error_message}"
 
 
 @mcp.tool()
-def create_chart_report(workspace_id: str, table_name: str, chart_name: str, chart_details: dict, filters: list[dict] | None = None, org_id: str | None = None) -> str:
+async def create_chart_report(workspace_id: str, table_name: str, chart_name: str, chart_details: dict, filters: list[dict] | None = None, org_id: str | None = None) -> str:
     """
     <use_case>
     - Create a chart report in the specified workspace for a table in Zoho Analytics.
@@ -163,6 +171,8 @@ def create_chart_report(workspace_id: str, table_name: str, chart_name: str, cha
                                    table_name=table_name, chart_name=chart_name, 
                                    chart_details=chart_details, filters=filters)
     except Exception as e:
+        ctx = get_context()
+        await ctx.error(traceback.format_exc())
         if hasattr(e, 'message') and 'Invalid input' in e.message and 'operation' in e.message and 'actual' in e.message:
             return "Invalid operation 'actual' for numeric column. Use 'sum' or 'count' instead."
         error_message = e.message if hasattr(e, 'message') else str(e)
@@ -170,7 +180,7 @@ def create_chart_report(workspace_id: str, table_name: str, chart_name: str, cha
 
 
 @mcp.tool()
-def create_pivot_report(workspace_id: str, table_name: str, report_name: str, pivot_details: dict, filters: list[dict] | None = None, org_id: str | None = None) -> str:
+async def create_pivot_report(workspace_id: str, table_name: str, report_name: str, pivot_details: dict, filters: list[dict] | None = None, org_id: str | None = None) -> str:
     """
     <use_case>
     - Create a pivot table report in the specified workspace and table in Zoho Analytics.
@@ -227,12 +237,14 @@ def create_pivot_report(workspace_id: str, table_name: str, report_name: str, pi
                                   table_name=table_name, report_name=report_name, 
                                   pivot_details=pivot_details, filters=filters)
     except Exception as e:
+        ctx = get_context()
+        await ctx.error(traceback.format_exc())
         error_message = e.message if hasattr(e, 'message') else str(e)
         return f"An error occurred while creating the pivot report: {error_message}"
 
 
 @mcp.tool()
-def create_summary_report(workspace_id: str, table_name: str, report_name: str, summary_details: dict, filters: list[dict] | None = None, org_id: str | None = None) -> str:
+async def create_summary_report(workspace_id: str, table_name: str, report_name: str, summary_details: dict, filters: list[dict] | None = None, org_id: str | None = None) -> str:
     """
     <use_case>
     - Create a summary report in the specified workspace and table in Zoho Analytics.
@@ -289,12 +301,14 @@ def create_summary_report(workspace_id: str, table_name: str, report_name: str, 
                                   table_name=table_name, report_name=report_name, 
                                   summary_details=summary_details, filters=filters)
     except Exception as e:
+        ctx = get_context()
+        await ctx.error(traceback.format_exc())
         error_message = e.message if hasattr(e, 'message') else str(e)
         return f"An error occurred while creating the summary report: {error_message}"
 
 
 @mcp.tool()
-def create_query_table(workspace_id: str, table_name: str, query: str, org_id: str | None = None) -> str:
+async def create_query_table(workspace_id: str, table_name: str, query: str, org_id: str | None = None) -> str:
     """
     <use_case>
         1. Create a query table in the specified workspace with the given name and SQL query.
@@ -326,12 +340,14 @@ def create_query_table(workspace_id: str, table_name: str, query: str, org_id: s
         return retry_with_fallback([org_id], workspace_id, "WORKSPACE", create_query_table_implementation, workspace_id=workspace_id,
                                   table_name=table_name, query=query)
     except Exception as e:
+        ctx = get_context()
+        await ctx.error(traceback.format_exc())
         error_message = e.message if hasattr(e, 'message') else str(e)
         return f"An error occurred while creating the query table : {error_message}"
 
 
 @mcp.tool()
-def delete_view(workspace_id: str, view_id: str, org_id: str | None = None) -> str:
+async def delete_view(workspace_id: str, view_id: str, org_id: str | None = None) -> str:
     """
     <use_case>
         Delete a view (table, report, or dashboard) in the specified workspace.
@@ -348,5 +364,7 @@ def delete_view(workspace_id: str, view_id: str, org_id: str | None = None) -> s
             org_id = Config.ORG_ID
         return retry_with_fallback([org_id], workspace_id, "WORKSPACE", delete_view_implementation, workspace_id=workspace_id,view_id=view_id)
     except Exception as e:
+        ctx = get_context()
+        await ctx.error(traceback.format_exc())
         error_message = e.message if hasattr(e, 'message') else str(e)
         return f"An error occurred while deleting the view: {error_message}"
