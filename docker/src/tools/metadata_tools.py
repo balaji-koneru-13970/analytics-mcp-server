@@ -101,13 +101,7 @@ async def get_view_details(view_id: str) -> dict:
 
 
 @mcp.tool()
-async def search_views(
-    workspace_id: str,
-    natural_language_query: str | None = None,
-    view_contains_str: str | None = None,
-    allowedViewTypesIds: list[int] | None = None,
-    org_id: str | None = None
-) -> list[dict]:
+@with_dynamic_doc(
     """
     <use_case>
         1) Searches for views in a workspace using either contains string name matching or natural language query via Retrieval-Augmented Generation (RAG).
@@ -127,7 +121,7 @@ async def search_views(
         - natural_language_query (str | None): Natural language query for intelligent search. Ignored if view_contains_str is provided.
         - view_contains_str (str | None): String to filter views by name matching. Takes precedence over natural_language_query.
         - allowedViewTypesIds (list[int] | None): Optional list of view type IDs to filter results.
-            Different types of views available in zoho analytics are:
+            Different types of views available in {PRODUCT_NAME} are:
             (view type_id, view_type_name)
             0 - Table: A standard table
             2 - Chart: A graphical representation of data
@@ -144,6 +138,14 @@ async def search_views(
         If an error occurs, returns an error message.
     </returns>
     """
+)
+async def search_views(
+    workspace_id: str,
+    natural_language_query: str | None = None,
+    view_contains_str: str | None = None,
+    allowedViewTypesIds: list[int] | None = None,
+    org_id: str | None = None
+) -> list[dict]:
     try:
         if not org_id:
             org_id = Config.ORG_ID
