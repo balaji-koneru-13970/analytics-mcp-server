@@ -9,9 +9,9 @@ The Zoho Analytics MCP Server (Beta) implements the Model Context Protocol (MCP)
 1. [Docker Image Setup](#1-docker-image-setup)
 2. [Configuring Environment Variables](#2-configuring-environment-variables)
 3. [Integrating with MCP Hosts](#3-integrate-with-mcp-hosts)
-    a. [Claude Desktop](#claude-desktop-configuration)
-    b. [VSCode](#vscode-configuration)
-    c. [Cursor](#cursor-configuration)
+    - [Claude Desktop](#claude-desktop-configuration)
+    - [VSCode](#vscode-configuration)
+    - [Cursor](#cursor-configuration)
 
 
 ### 1. Docker Image Setup
@@ -259,9 +259,9 @@ The Zoho Analytics MCP server provides various tools for interacting with Zoho A
       <td>Fetches the list of workspaces in the user's organization.</td>
     </tr>
     <tr>
-      <td>get_view_list</td>
-      <td>Get Views</td>
-      <td>Fetches the list of views (tables, reports, dashboards) within a specified workspace.</td>
+      <td>search_views</td>
+      <td>search Views</td>
+      <td>Fetches the list of views (tables, reports, dashboards) within a specified workspace based on the query</td>
     </tr>
     <tr>
       <td>get_view_details</td>

@@ -7,6 +7,8 @@ import requests
 import pandas as pd
 from utils.common import retry_with_fallback
 from utils.data_utils import import_data_implementation, export_view_implementation, query_data_implementation
+import traceback
+from fastmcp.server.dependencies import get_context
 from utils.decorators import with_dynamic_doc
 
 
@@ -32,7 +34,7 @@ from utils.decorators import with_dynamic_doc
         A dictionary containing the column names and their respective data types.
     </returns>
 """)
-def analyze_file_structure(file_path: str) -> dict:
+async def analyze_file_structure(file_path: str) -> dict:
 
     try:
         if not os.path.exists(file_path):
@@ -71,6 +73,8 @@ def analyze_file_structure(file_path: str) -> dict:
             return "Unsupported file type. Please provide a CSV or JSON file."
     
     except Exception as e:
+        ctx = get_context()
+        await ctx.error(traceback.format_exc())
         return f"An error occurred while analyzing the file structure: {e}"
 
 @mcp.tool()
@@ -88,7 +92,7 @@ def analyze_file_structure(file_path: str) -> dict:
         A string indicating the path where the file has been saved locally.
     </returns>
 """)
-def download_file(file_url: str) -> str:
+async def download_file(file_url: str) -> str:
 
     try:
 
@@ -101,11 +105,11 @@ def download_file(file_url: str) -> str:
             filename = f"downloaded_file.{file_type}"
 
         downloaded_path = os.path.join(download_dir, filename)
-        
+
         # Get SSL verification setting from analytics client
         analytics_client = get_analytics_client_instance()
         verify_ssl = not analytics_client.exclude_ssl
-        
+
         response = requests.get(file_url, stream=True, verify=verify_ssl)
         response.raise_for_status()
 
@@ -116,11 +120,12 @@ def download_file(file_url: str) -> str:
         return f"File downloaded successfully and saved to {downloaded_path}"
     
     except Exception as e:
-
+        ctx = get_context()
+        await ctx.error(traceback.format_exc())
         return "Failed to download the file. Please check the URL and try again. Please make sure the file is accessible and the URL is correct."
 
 @mcp.tool()
-def import_data(workspace_id: str, table_id: str, data: list[dict] | None = None, file_path: str | None = None, file_type: str | None = None, org_id: str | None = None) -> str:
+async def import_data(workspace_id: str, table_id: str, data: list[dict] | None = None, file_path: str | None = None, file_type: str | None = None, org_id: str | None = None) -> str:
     """
     <use_case>
     1. Imports data into a specified table in a workspace. The data to be imported should be provided as a list of dictionaries or as a file path (only local file). If file_path is provided, the format of the file should also be provided (csv or json), else the data parameter will be used.
@@ -154,6 +159,8 @@ def import_data(workspace_id: str, table_id: str, data: list[dict] | None = None
         
         return retry_with_fallback([org_id], workspace_id, "WORKSPACE", import_data_implementation, workspace_id=workspace_id, file_path=file_path, table_id=table_id, file_type=file_type, data=data)
     except Exception as e:
+        ctx = get_context()
+        await ctx.error(traceback.format_exc())
         return f"An error occurred while adding data to the table : {e}"
 
 
@@ -175,13 +182,15 @@ def import_data(workspace_id: str, table_id: str, data: list[dict] | None = None
         org_id (str | None): The ID of the organization to which the workspace belongs to. If not provided, it defaults to the organization ID from the configuration.
     <arguments>               
 """)
-def export_view(workspace_id: str, view_id: str, response_file_format: str, response_file_path: str, org_id: str | None = None) -> str:
+async def export_view(workspace_id: str, view_id: str, response_file_format: str, response_file_path: str, org_id: str | None = None) -> str:
 
     try:
         if not org_id:
             org_id = Config.ORG_ID
         return retry_with_fallback([org_id], workspace_id, "WORKSPACE", export_view_implementation, response_file_format=response_file_format, response_file_path=response_file_path, workspace_id=workspace_id, view_id=view_id)
     except Exception as e:
+        ctx = get_context()
+        await ctx.error(traceback.format_exc())
         return f"An error occurred while exporting the object : {e}"
 
 
@@ -214,11 +223,13 @@ def export_view(workspace_id: str, view_id: str, response_file_format: str, resp
         If an error occurs, returns an error message.
     </returns>
 """)
-def query_data(workspace_id: str, sql_query: str, org_id: str | None = None) -> list[dict]:
+async def query_data(workspace_id: str, sql_query: str, org_id: str | None = None) -> list[dict]:
 
     if not org_id:
         org_id = Config.ORG_ID
     try:
         return retry_with_fallback([org_id], workspace_id, "WORKSPACE", query_data_implementation, workspace_id=workspace_id, sql_query=sql_query)
     except Exception as e:
+        ctx = get_context()
+        await ctx.error(traceback.format_exc())
         return f"An error occurred while executing the query: {e}"

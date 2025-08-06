@@ -4,8 +4,7 @@ def create_workspace_implementation(org_id, workspace_name):
     analytics_client = get_analytics_client_instance()
     org = analytics_client.get_org_instance(org_id)
     result = org.create_workspace(workspace_name)
-    if result:
-        return f"Workspace '{workspace_name}' created successfully. Workspace Id : {result}"
+    return f"Workspace '{workspace_name}' created successfully. Workspace Id : {result}"
 
 
 def create_table_implementation(org_id, workspace_id, table_name, columns_list):
@@ -156,7 +155,7 @@ def create_summary_report_implementation(org_id, workspace_id, table_name, repor
         axis_columns.append({
             "type": "groupBy",
             "columnName": gb["columnName"],
-            "operation": "actual",  # grouping doesn't need aggregation
+            "operation": "actual",
             "tableName": gb["tableName"]
         })
 

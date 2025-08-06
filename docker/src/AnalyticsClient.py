@@ -2452,7 +2452,7 @@ class AnalyticsClient:
             if access_token != None:
                 request_headers["Authorization"] = "Zoho-oauthtoken " + access_token
 
-            request_headers["User-Agent"] = "Analytics Python Client v" + self.CLIENT_VERSION
+            request_headers["User-Agent"] = "zoho-analytics-mcp-server"
             
             req_obj = req_obj = requests.Session()
             if self.proxy:
@@ -2518,7 +2518,7 @@ class AnalyticsClient:
             if access_token != None:
                 request_headers["Authorization"] = "Zoho-oauthtoken " + access_token
 
-            request_headers["User-Agent"] = "Analytics Python Client v" + self.CLIENT_VERSION
+            request_headers["User-Agent"] = "zoho-analytics-mcp-server"
             
             req_obj = req_obj = requests.Session()
             if self.proxy:
@@ -2582,7 +2582,7 @@ class AnalyticsClient:
             if access_token != None:
                 request_headers["Authorization"] = "Zoho-oauthtoken " + access_token
 
-            request_headers["User-Agent"] = "Analytics Python Client v" + self.CLIENT_VERSION
+            request_headers["User-Agent"] = "zoho-analytics-mcp-server"
 
             req_obj = req_obj = requests.Session()
             if self.proxy:
