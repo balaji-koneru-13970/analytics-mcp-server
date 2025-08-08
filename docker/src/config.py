@@ -33,4 +33,5 @@ def get_analytics_client_instance() -> AnalyticsClient:
         analytics_client.analytics_server_url = Config.ANALYTICS_SERVER_URL
 
         analytics_client.exclude_ssl = True if Config.IS_ONPREMISE else False
+        analytics_client.user_agent = ZA_Config.USER_AGENT_NAME
     return analytics_client

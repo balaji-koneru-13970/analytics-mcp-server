@@ -18,3 +18,4 @@ class ZA_Config:
     PRODUCT_NAME = parser.get(active_profile, 'PRODUCT_NAME')
     PRODUCT_VERSION = parser.get(active_profile, 'PRODUCT_VERSION')
     MCP_SERVER_NAME = parser.get(active_profile, 'MCP_SERVER_NAME')
+    USER_AGENT_NAME = parser.get(active_profile, 'USER_AGENT_NAME')

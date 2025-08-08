@@ -34,6 +34,7 @@ class AnalyticsClient:
         self.accounts_server_url = "https://accounts.zoho.com"
         self.analytics_server_url = "https://analyticsapi.zoho.com"
         self.exclude_ssl = False
+        self.user_agent = "zoho-analytics-mcp-server"
 
         self.client_id = client_id
         self.client_secret = client_secret
@@ -2452,7 +2453,7 @@ class AnalyticsClient:
             if access_token != None:
                 request_headers["Authorization"] = "Zoho-oauthtoken " + access_token
 
-            request_headers["User-Agent"] = "zoho-analytics-mcp-server"
+            request_headers["User-Agent"] = self.user_agent
             
             req_obj = req_obj = requests.Session()
             if self.proxy:
@@ -2518,7 +2519,7 @@ class AnalyticsClient:
             if access_token != None:
                 request_headers["Authorization"] = "Zoho-oauthtoken " + access_token
 
-            request_headers["User-Agent"] = "zoho-analytics-mcp-server"
+            request_headers["User-Agent"] = self.user_agent
             
             req_obj = req_obj = requests.Session()
             if self.proxy:
@@ -2582,7 +2583,7 @@ class AnalyticsClient:
             if access_token != None:
                 request_headers["Authorization"] = "Zoho-oauthtoken " + access_token
 
-            request_headers["User-Agent"] = "zoho-analytics-mcp-server"
+            request_headers["User-Agent"] = self.user_agent
 
             req_obj = req_obj = requests.Session()
             if self.proxy:
